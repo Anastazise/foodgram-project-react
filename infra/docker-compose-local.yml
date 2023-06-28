@@ -23,14 +23,12 @@ services:
     env_file:
       - ./.env
 
-
   frontend:
     image: anastazise/foodgram_frontend:latest
     depends_on:
       - db
     volumes:
       - ../frontend/:/app/result_build/
-
 
   nginx:
     image: nginx:1.21.3-alpine
