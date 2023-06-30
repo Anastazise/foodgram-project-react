@@ -3,6 +3,7 @@ from django.db import transaction
 from django.db.models import F
 from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
+from requests import request
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
@@ -27,12 +28,12 @@ class TagSerializer(ModelSerializer):
 
 
 class RecipeSerializer(ModelSerializer):
-    tags = TagSerializer(many=True)
-    author = CustomUserSerializer()
+    tags = TagSerializer(many=True, read_only=True)
+    author = CustomUserSerializer(read_only=True)
     image = Base64ImageField()
     ingredients = SerializerMethodField()
     is_favorited = SerializerMethodField()
-    is_in_basket = SerializerMethodField()
+    is_in_shopping_cart = SerializerMethodField()
 
     class Meta:
         model = Recipe
@@ -42,7 +43,7 @@ class RecipeSerializer(ModelSerializer):
             'author',
             'ingredients',
             'is_favorited',
-            'is_in_basket',
+            'is_in_shopping_cart',
             'name',
             'image',
             'text',
@@ -52,24 +53,24 @@ class RecipeSerializer(ModelSerializer):
             "tags",
             "author",
             "is_favorited",
-            "is_in_basket"
+            "is_in_shopping_cart"
         )
 
     def get_ingredients(self, obj):
         recipe = obj
         ingredients = recipe.ingredients.values(
-            'id', 'name', 'unit',
+            'id', 'name', 'measurement_unit',
             amount=F('components__amount')
         )
         return ingredients
 
-    def get_favorited(self, obj):
+    def get_is_favorited(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
         return user.favorites.filter(recipe=obj).exists()
 
-    def get_is_in_basket(self, obj):
+    def get_is_in_shopping_cart(self, obj):
         user = self.context.get('request').user
         if user.is_anonymous:
             return False
@@ -125,10 +126,11 @@ class RecipeSerializer(ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        tags = validated_data.pop('tags')
+        # tags: list[int] = validated_data.pop("tags")
+        tags_data = self.initial_data.pop('tags')
+        recipe.tags.set(tags_data)
         ingredients = validated_data.pop('ingredients')
-        recipe = Recipe.objects.create(**validated_data)
-        recipe.tags.set(tags)
+        recipe = Recipe.objects.create(author=request.user, **validated_data)
 
         self.create_ingredients_amounts(recipe=recipe,
                                         ingredients=ingredients)
@@ -155,7 +157,7 @@ class ComponentsWriteSerializer(ModelSerializer):
 
     class Meta:
         model = Components
-        fields = ('id', 'count')
+        fields = ('id', 'amount')
 
 
 class RecipeShortSerializer(ModelSerializer):

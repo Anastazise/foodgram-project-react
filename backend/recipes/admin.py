@@ -16,7 +16,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display = ('name', 'units',)
+    list_display = ('name', 'measurement_unit',)
     list_filter = ('name',)
 
 
@@ -37,4 +37,4 @@ class FavouriteAdmin(admin.ModelAdmin):
 
 @admin.register(Components)
 class Components(admin.ModelAdmin):
-    list_display = ('recipe', 'ingredient', 'count',)
+    list_display = ('recipe', 'ingredient', 'amount',)

@@ -26,10 +26,10 @@ class Ingredient(models.Model):
         verbose_name_plural = 'Ингредиенты'
 
     name = models.CharField('Название', max_length=200)
-    units = models.CharField('Единица измерения', max_length=200)
+    measurement_unit = models.CharField('Единица измерения', max_length=200)
 
     def __str__(self):
-        return f'{self.name}, {self.units}'
+        return f'{self.name}, {self.measurement_unit}'
 
 
 class Recipe(models.Model):
@@ -40,7 +40,7 @@ class Recipe(models.Model):
 
     name = models.CharField('Название', max_length=200)
     author = models.ForeignKey(
-        User,
+        to=User,
         related_name='recipes',
         on_delete=models.CASCADE,
         verbose_name='Автор',
@@ -52,7 +52,7 @@ class Recipe(models.Model):
     )
     cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления',
-        validators=[MinValueValidator(1, message='Минимальное значение 1!')]
+        validators=[MinValueValidator(1, message='Минимальное значение 1')]
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -86,15 +86,15 @@ class Components(models.Model):
         on_delete=models.CASCADE,
         verbose_name='Ингредиент',
     )
-    count = models.PositiveSmallIntegerField(
+    amount = models.PositiveSmallIntegerField(
         verbose_name='Количество',
         validators=[MinValueValidator(1)]
     )
 
     def __str__(self):
         return (
-            f'{self.ingredient.name} {self.count}'
-            f'({self.ingredient.units})'
+            f'{self.ingredient.name} {self.amount}'
+            f'({self.ingredient.measurement_unit})'
         )
 
 

@@ -133,7 +133,7 @@ paths:
           schema:
             type: integer
             enum: [0, 1]
-        - name: is_in_basket
+        - name: is_in_shopping_cart
           required: false
           in: query
           description: Показывать только рецепты, находящиеся в списке покупок.
@@ -816,7 +816,7 @@ components:
         is_favorited:
           type: boolean
           description: 'Находится ли в избранном'
-        is_in_basket:
+        is_in_shopping_cart:
           type: boolean
           description: 'Находится ли в корзине'
         name:
@@ -839,7 +839,7 @@ components:
         - tags
         - author
         - is_favorited
-        - is_in_basket
+        - is_in_shopping_cart
         - name
         - image
         - text
