@@ -131,7 +131,7 @@ function App() {
     api
       .getRecipes({
         page: 1,
-        is_in_shopping_cart: Number(true)
+        is_in_basket: Number(true)
       })
       .then(res => {
         const { count } = res

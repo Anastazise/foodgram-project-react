@@ -2,8 +2,8 @@ import styles from './styles.module.css'
 import cn from 'classnames'
 import { LinkComponent, Icons } from '../index'
 
-const Purchase = ({ image, name, cooking_time, id, handleRemoveFromCart, is_in_shopping_cart, updateOrders }) => {
-  if (!is_in_shopping_cart) { return null }
+const Purchase = ({ image, name, cooking_time, id, handleRemoveFromCart, is_in_basket, updateOrders }) => {
+  if (!is_in_basket) { return null }
   return <li className={styles.purchase}>
     <div className={styles.purchaseContent}>
       <div

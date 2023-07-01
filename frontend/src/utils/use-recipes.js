@@ -32,7 +32,7 @@ export default function useRecipes () {
     method({ id }).then(res => {
       const recipesUpdated = recipes.map(recipe => {
         if (recipe.id === id) {
-          recipe.is_in_shopping_cart = toAdd
+          recipe.is_in_basket = toAdd
         }
         return recipe
       })

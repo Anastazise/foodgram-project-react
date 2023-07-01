@@ -48,7 +48,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
     ingredients,
     text,
     is_favorited,
-    is_in_shopping_cart
+    is_in_basket
   } = recipe
   
   return <Main>
@@ -93,13 +93,13 @@ const SingleCard = ({ loadItem, updateOrders }) => {
           <div className={styles['single-card__buttons']}>
             {authContext && <Button
               className={styles['single-card__button']}
-              modifier={is_in_shopping_cart ? 'style_light' : 'style_dark-blue'}
+              modifier={is_in_basket ? 'style_light' : 'style_dark-blue'}
               clickHandler={_ => {
-                handleAddToCart({ id, toAdd: Number(!is_in_shopping_cart), callback: updateOrders })
+                handleAddToCart({ id, toAdd: Number(!is_in_basket), callback: updateOrders })
               }}
             >
               
-            {is_in_shopping_cart ? <><Icons.DoneIcon color="#4A61DD"/>Рецепт добавлен</> : <><Icons.PlusIcon /> Добавить в покупки</>}
+            {is_in_basket ? <><Icons.DoneIcon color="#4A61DD"/>Рецепт добавлен</> : <><Icons.PlusIcon /> Добавить в покупки</>}
             </Button>}
             {(userContext || {}).id !== author.id && authContext && <Button
               className={styles['single-card__button']}

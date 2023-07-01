@@ -107,7 +107,7 @@ class Api {
     page = 1,
     limit = 6,
     is_favorited = 0,
-    is_in_shopping_cart = 0,
+    is_in_basket = 0,
     author,
     tags
   } = {}) {
@@ -115,7 +115,7 @@ class Api {
       const authorization = token ? { 'authorization': `Token ${token}` } : {}
       const tagsString = tags ? tags.filter(tag => tag.value).map(tag => `&tags=${tag.slug}`).join('') : ''
       return fetch(
-        `/api/recipes/?page=${page}&limit=${limit}${author ? `&author=${author}` : ''}${is_favorited ? `&is_favorited=${is_favorited}` : ''}${is_in_shopping_cart ? `&is_in_shopping_cart=${is_in_shopping_cart}` : ''}${tagsString}`,
+        `/api/recipes/?page=${page}&limit=${limit}${author ? `&author=${author}` : ''}${is_favorited ? `&is_favorited=${is_favorited}` : ''}${is_in_basket ? `&is_in_basket=${is_in_basket}` : ''}${tagsString}`,
         {
           method: 'GET',
           headers: {
@@ -346,7 +346,7 @@ class Api {
   addToOrders ({ id }) {
     const token = localStorage.getItem('token')
     return fetch(
-      `/api/recipes/${id}/shopping_cart/`,
+      `/api/recipes/${id}/basket/`,
       {
         method: 'POST',
         headers: {
@@ -360,7 +360,7 @@ class Api {
   removeFromOrders ({ id }) {
     const token = localStorage.getItem('token')
     return fetch(
-      `/api/recipes/${id}/shopping_cart/`,
+      `/api/recipes/${id}/basket/`,
       {
         method: 'DELETE',
         headers: {
@@ -388,7 +388,7 @@ class Api {
   downloadFile () {
     const token = localStorage.getItem('token')
     return fetch(
-      `/api/recipes/download_shopping_cart/`,
+      `/api/recipes/download_basket/`,
       {
         method: 'GET',
         headers: {
