@@ -41,50 +41,6 @@ class IngredientAmountSerializer(ModelSerializer):
         )
 
 
-class CreateRecipeSerializer(ModelSerializer):
-    tags = TagSerializer(many=True)
-    Ingredients = IngredientAmountSerializer(many=True, read_only=True)
-    author = CustomUserSerializer(read_only=True)
-    image = Base64ImageField()
-
-    class Meta:
-        model=Components
-        fields=(
-            'name',
-            'image',
-            'tags',
-            'cooking_time',
-            'text',
-            'ingredients'
-        )
-    
-    @transaction.atomic
-    def create_ingredients_amounts(self, ingredients, recipe):
-        Components.objects.bulk_create(
-            [Components(
-                ingredient=Ingredient.objects.get(id=ingredient['id']),
-                recipe=recipe['id'],
-                amount=ingredient['amount']
-            ) for ingredient in ingredients]
-        )
-
-    @transaction.atomic
-    def create(self, validated_data):
-        tags_data = validated_data.get('tags')
-        ingredients = validated_data.get('ingredients')
-        recipe = Recipe.objects.create(author=request.user, **validated_data)
-        recipe.tags.set(tags_data)
-        self.create_ingredients_amounts(recipe=recipe,
-                                        ingredients=ingredients)
-        return recipe
-    
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        return CreateRecipeSerializer(instance, context=context).data
-
-
-
 class RecipeSerializer(ModelSerializer):
     tags = TagSerializer(many=True, read_only=True)
     author = CustomUserSerializer(read_only=True)
@@ -187,6 +143,49 @@ class RecipeSerializer(ModelSerializer):
                                         ingredients=ingredients)
         instance.save()
         return instance
+
+
+class CreateRecipeSerializer(ModelSerializer):
+    tags = TagSerializer(many=True)
+    ingredients = IngredientAmountSerializer(many=True)
+    author = CustomUserSerializer(read_only=True)
+    image = Base64ImageField()
+
+    class Meta:
+        model=Components
+        fields=(
+            'name',
+            'image',
+            'tags',
+            'cooking_time',
+            'text',
+            'ingredients'
+        )
+    
+    @transaction.atomic
+    def create_ingredients_amounts(self, ingredients, recipe):
+        Components.objects.bulk_create(
+            [Components(
+                ingredient=Ingredient.objects.get(id=ingredient['id']),
+                recipe=recipe['id'],
+                amount=ingredient['amount']
+            ) for ingredient in ingredients]
+        )
+
+    @transaction.atomic
+    def create(self, validated_data):
+        tags_data = validated_data.pop('tags')
+        ingredients = validated_data.pop('ingredients')
+        recipe = Recipe.objects.create(author=request.user, **validated_data)
+        recipe.tags.set(tags_data)
+        self.create_ingredients_amounts(recipe=recipe,
+                                        ingredients=ingredients)
+        return recipe
+    
+    def to_representation(self, instance):
+        request = self.context.get('request')
+        context = {'request': request}
+        return CreateRecipeSerializer(instance, context=context).data
 
 
 class ComponentsWriteSerializer(ModelSerializer):

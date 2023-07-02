@@ -812,7 +812,7 @@ components:
           description: 'Список ингредиентов'
           type: array
           items:
-            $ref: '#/components/schemas/IngredientInRecipe'
+            $ref: '#/components/schemas/Components'
         is_favorited:
           type: boolean
           description: 'Находится ли в избранном'
@@ -881,7 +881,7 @@ components:
       required:
         - name
         - measurement_unit
-    IngredientInRecipe:
+    Components:
       type: object
       properties:
         id:
