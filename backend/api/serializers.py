@@ -12,8 +12,9 @@ from rest_framework import serializers
 
 from users.serializers import CustomUserSerializer
 from recipes.models import Ingredient, Components, Recipe, Tag
+import logging
 
-
+logger = logging.getLogger(__name__)
 
 class IngredientSerializer(ModelSerializer):
     class Meta:
@@ -62,15 +63,15 @@ class CreateRecipeSerializer(ModelSerializer):
         Components.objects.bulk_create(
             [Components(
                 ingredient=Ingredient.objects.get(id=ingredient['id']),
-                recipe=recipe,
+                recipe=recipe['id'],
                 amount=ingredient['amount']
             ) for ingredient in ingredients]
         )
 
     @transaction.atomic
     def create(self, validated_data):
-        tags_data = self.initial_data.pop('tags')
-        ingredients = validated_data.pop('ingredients')
+        tags_data = validated_data.get('tags')
+        ingredients = validated_data.get('ingredients')
         recipe = Recipe.objects.create(author=request.user, **validated_data)
         recipe.tags.set(tags_data)
         self.create_ingredients_amounts(recipe=recipe,
