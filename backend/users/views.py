@@ -10,6 +10,9 @@ from api.pagination import CustomPagination
 from .serializers import CustomUserSerializer, SubscribeSerializer
 from users.serializers import User
 from .models import Subscribe
+import logging
+
+logger = logging.getLogger('django')
 
 
 class CustomUserViewSet(UserViewSet):
@@ -40,15 +43,13 @@ class CustomUserViewSet(UserViewSet):
             ).delete()
             return Response(status=status.HTTP_204_NO_CONTENT)
 
-    @action(
-        detail=False,
-        permission_classes=[IsAuthenticated]
-    )
+    @action(detail=False, url_path='subscriptions',
+            url_name='subscriptions', permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
+        logger.info('SUBB')
         user = request.user
-        queryset = Subscribe.objects.filter(subscribing__user=user)
+        queryset = user.subscriber.all()
         pages = self.paginate_queryset(queryset)
-        serializer = SubscribeSerializer(pages,
-            many=True,
-            context={'request': request})
+        serializer = SubscribeSerializer(
+            pages, many=True, context={'request': request})
         return self.get_paginated_response(serializer.data)

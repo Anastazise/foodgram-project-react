@@ -14,7 +14,7 @@ from users.serializers import CustomUserSerializer
 from recipes.models import Ingredient, Components, Recipe, Tag
 import logging
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('django')
 
 class IngredientSerializer(ModelSerializer):
     class Meta:
@@ -26,19 +26,6 @@ class TagSerializer(ModelSerializer):
     class Meta:
         model = Tag
         fields = '__all__'
-
-
-class IngredientAmountSerializer(ModelSerializer):
-    id = serializers.ReadOnlyField(source='ingredient.id')
-    name = serializers.ReadOnlyField(source='ingredient.name')
-    measurement_unit = serializers.ReadOnlyField(
-        source='ingredient.measurement_unit')
-
-    class Meta:
-        model = Components
-        fields = (
-            'id', 'name', 'measurement_unit', 'amount'
-        )
 
 
 class RecipeSerializer(ModelSerializer):
@@ -145,6 +132,14 @@ class RecipeSerializer(ModelSerializer):
         return instance
 
 
+class IngredientAmountSerializer(ModelSerializer):
+    id = IntegerField(write_only=True)
+
+    class Meta:
+        model = Components
+        fields = ('id', 'amount')
+
+
 class CreateRecipeSerializer(ModelSerializer):
     tags = TagSerializer(many=True)
     ingredients = IngredientAmountSerializer(many=True)
@@ -174,6 +169,8 @@ class CreateRecipeSerializer(ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
+        logger.info('------>CREATE<-------')
+        print("ТЕКСТ ЛОГА")
         tags_data = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(author=request.user, **validated_data)

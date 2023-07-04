@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import logging
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -18,7 +18,9 @@ from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeShortSerializer,
-                          TagSerializer, RecipeSerializer)
+                          TagSerializer, RecipeSerializer, CreateRecipeSerializer)
+
+logger = logging.getLogger("django")
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -36,12 +38,23 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(ModelViewSet):
+    logger.info('------>CREATE<-------')
+    print("ТЕКСТ ЛОГА")
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+
+    def post(self, request):
+        logger.debug('------>CREATE<-------')
+        print("ТЕКСТ ЛОГА")
+        ser = CreateRecipeSerializer(data=request.data)
+        print("Platform is running at risk")
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        return Response({'post': ser.data})
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

@@ -133,28 +133,33 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-import logging
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': False,
     'formatters': {
-        'default': {
-            'format': '[DJANGO] %(levelname)s %(asctime)s %(module)s '
-                      '%(name)s.%(funcName)s:%(lineno)s: %(message)s'
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
         },
     },
     'handlers': {
         'console': {
-            'level': 'INFO',
+            'level': 'DEBUG',
             'class': 'logging.StreamHandler',
-            'formatter': 'default',
-        }
+            'formatter': 'verbose'
+        },
     },
     'loggers': {
-        '': {
+        'django': {
             'handlers': ['console'],
-            'level': 'INFO',
-            'propagate': False,
-        }
-    },
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    }
 }
+
+if DEBUG:
+    # make all loggers use the console.
+    for logger in LOGGING['loggers']:
+        LOGGING['loggers'][logger]['handlers'] = ['console']
