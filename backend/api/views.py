@@ -38,8 +38,6 @@ class TagViewSet(ReadOnlyModelViewSet):
 
 
 class RecipeViewSet(ModelViewSet):
-    logger.info('------>CREATE<-------')
-    print("ТЕКСТ ЛОГА")
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
@@ -47,11 +45,14 @@ class RecipeViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
+    def get_serializer_class(self):
+        if self.action in ('create', 'update'):
+            return CreateRecipeSerializer
+        else:
+            return RecipeSerializer
+
     def post(self, request):
-        logger.debug('------>CREATE<-------')
-        print("ТЕКСТ ЛОГА")
         ser = CreateRecipeSerializer(data=request.data)
-        print("Platform is running at risk")
         ser.is_valid(raise_exception=True)
         ser.save()
         return Response({'post': ser.data})

@@ -7,10 +7,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from api.pagination import CustomPagination
+from api.permissions import IsAuthorOrReadOnly
 from .serializers import CustomUserSerializer, SubscribeSerializer
 from users.serializers import User
 from .models import Subscribe
 import logging
+
 
 logger = logging.getLogger('django')
 
@@ -19,6 +21,7 @@ class CustomUserViewSet(UserViewSet):
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     pagination_class = CustomPagination
+    permission_classes = (IsAuthorOrReadOnly,)
 
     @action(
         detail=True,
