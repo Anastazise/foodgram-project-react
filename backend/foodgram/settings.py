@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'aboba'
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -107,10 +107,6 @@ DJOSER = {
         'current_user': 'api.serializers.CustomUserSerializer',
     },
     'HIDE_USERS': False,
-    # 'PERMISSIONS': {
-    #     'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
-    #     'user_list': ['rest_framework.permissions.IsAuthenticatedOrReadOnly'],
-    # },
 }
 
 LANGUAGE_CODE = 'en-us'
@@ -131,35 +127,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-LOGGING = {
-    'version': 1,
-    'formatters': {
-        'verbose': {
-            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
-        },
-        'simple': {
-            'format': '%(levelname)s %(message)s'
-        },
-    },
-    'handlers': {
-        'console': {
-            'level': 'DEBUG',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['console'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-    }
-}
-
-if DEBUG:
-    # make all loggers use the console.
-    for logger in LOGGING['loggers']:
-        LOGGING['loggers'][logger]['handlers'] = ['console']

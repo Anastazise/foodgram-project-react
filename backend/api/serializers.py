@@ -1,9 +1,7 @@
 
 from django.db import transaction
 from django.db.models import F
-from django.shortcuts import get_object_or_404
 from drf_extra_fields.fields import Base64ImageField
-from requests import request
 
 from rest_framework.exceptions import ValidationError
 from rest_framework.fields import IntegerField, SerializerMethodField
@@ -14,7 +12,9 @@ from users.serializers import CustomUserSerializer
 from recipes.models import Ingredient, Components, Recipe, Tag
 import logging
 
+
 logger = logging.getLogger('django')
+
 
 class IngredientSerializer(ModelSerializer):
     class Meta:
@@ -96,8 +96,8 @@ class CreateRecipeSerializer(ModelSerializer):
     image = Base64ImageField()
 
     class Meta:
-        model=Recipe
-        fields=(
+        model = Recipe
+        fields = (
             'id',
             'tags',
             'author',
@@ -107,7 +107,7 @@ class CreateRecipeSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
-    
+
     def validate_ingredients(self, ingredients):
         ingredients_list = []
         if not ingredients:
@@ -118,7 +118,7 @@ class CreateRecipeSerializer(ModelSerializer):
                 raise serializers.ValidationError(
                     'Ингридиенты должны быть уникальны')
             ingredients_list.append(ingredient['id'])
-            if int(ingredient.get('amount')) < 1: #!!!!!!!!!
+            if int(ingredient.get('amount')) < 1:
                 raise serializers.ValidationError(
                     'Количество ингредиента больше 0')
         return ingredients
@@ -140,7 +140,7 @@ class CreateRecipeSerializer(ModelSerializer):
                     'Указанного тега не существует')
             tags_list.append(tag)
         return value
-    
+
     @transaction.atomic
     def create_ingredients_amounts(self, ingredients, recipe):
         Components.objects.bulk_create(
@@ -153,14 +153,13 @@ class CreateRecipeSerializer(ModelSerializer):
 
     @transaction.atomic
     def create(self, validated_data):
-        request = self.context.get('request', None)
         tags = validated_data.pop('tags')
         ingredients = validated_data.pop('ingredients')
         recipe = Recipe.objects.create(**validated_data)
         recipe.tags.set(tags)
         self.create_ingredients_amounts(ingredients, recipe)
         return recipe
-    
+
     @transaction.atomic
     def update(self, instance, validated_data):
         tags = validated_data.pop('tags')
@@ -175,7 +174,7 @@ class CreateRecipeSerializer(ModelSerializer):
                                         ingredients=ingredients)
         instance.save()
         return instance
-    
+
     # def to_representation(self, instance):
     #     request = self.context.get('request')
     #     context = {'request': request}

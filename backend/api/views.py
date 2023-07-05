@@ -18,7 +18,8 @@ from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
 from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeShortSerializer,
-                          TagSerializer, RecipeSerializer, CreateRecipeSerializer)
+                          TagSerializer, RecipeSerializer,
+                          CreateRecipeSerializer)
 
 logger = logging.getLogger("django")
 

@@ -1,10 +1,8 @@
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserSerializer
 
-from rest_framework import status
 from rest_framework import serializers
 from rest_framework.fields import SerializerMethodField
-from rest_framework.exceptions import ValidationError
 
 from .models import Subscribe
 
@@ -27,7 +25,7 @@ class CustomUserSerializer(UserSerializer):
             'is_subscribed',
         )
         write_only_fields = ('password',)
-    
+
     def create(self, validated_data):
         user = User.objects.create(
             email=validated_data['email'],
@@ -46,7 +44,7 @@ class CustomUserSerializer(UserSerializer):
         return Subscribe.objects.filter(user=user, author=obj).exists()
 
 
-class SubscribeSerializer(serializers.ModelSerializer):    
+class SubscribeSerializer(serializers.ModelSerializer):
     email = serializers.ReadOnlyField(source='author.email')
     id = serializers.ReadOnlyField(source='author.id')
     username = serializers.ReadOnlyField(source='author.username')
