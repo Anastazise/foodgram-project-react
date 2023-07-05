@@ -111,24 +111,25 @@ class RecipeViewSet(ModelViewSet):
         ingredients = Components.objects.filter(
             recipe__basket__user=request.user
         ).values(
-            'ingredient_name',
-            'ingredient_unit'
+            'ingredient__name',
+            'ingredient__measurement_unit'
         ).annotate(amount=Sum('amount'))
 
         today = datetime.today()
-        basket_list = (
+        shopping_list = (
             f'Список покупок для: {user.get_full_name()}\n\n'
             f'Дата: {today:%Y-%m-%d}\n\n'
         )
-        basket_list += '\n'.join([
-            f'- {ingredient["ingredient_name"]} '
-            f'({ingredient["ingredient_unit"]})'
+        shopping_list += '\n'.join([
+            f'- {ingredient["ingredient__name"]} '
+            f'({ingredient["ingredient__measurement_unit"]})'
             f' - {ingredient["amount"]}'
             for ingredient in ingredients
         ])
-        basket_list += f'\n\nFoodgram ({today:%Y})'
+        shopping_list += f'\n\nFoodgram ({today:%Y})'
 
-        filename = f'{user.username}_basket_list.txt'
-        response = HttpResponse(basket_list, content_type='text/plain')
+        filename = f'{user.username}_shopping_list.txt'
+        response = HttpResponse(shopping_list, content_type='text/plain')
         response['Content-Disposition'] = f'attachment; filename={filename}'
+
         return response
