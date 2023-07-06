@@ -10,10 +10,6 @@ from rest_framework import serializers
 
 from users.serializers import CustomUserSerializer
 from recipes.models import Ingredient, Components, Recipe, Tag
-import logging
-
-
-logger = logging.getLogger('django')
 
 
 class IngredientSerializer(ModelSerializer):
@@ -145,9 +141,9 @@ class CreateRecipeSerializer(ModelSerializer):
     def create_ingredients_amounts(self, ingredients, recipe):
         Components.objects.bulk_create(
             [Components(
-                ingredient=Ingredient.objects.get(id=ingredient['id']),
                 recipe=recipe,
-                amount=ingredient['amount']
+                ingredient_id=ingredient.get('id'),
+                amount=ingredient.get('amount'),
             ) for ingredient in ingredients]
         )
 
@@ -175,10 +171,12 @@ class CreateRecipeSerializer(ModelSerializer):
         instance.save()
         return instance
 
-    # def to_representation(self, instance):
-    #     request = self.context.get('request')
-    #     context = {'request': request}
-    #     return CreateRecipeSerializer(instance, context=context).data
+    def to_representation(self, instance):
+        return RecipeSerializer(
+            instance,
+            context={
+                'request': self.context.get('request')
+            }).data
 
 
 class ComponentsWriteSerializer(ModelSerializer):

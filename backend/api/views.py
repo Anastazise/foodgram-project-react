@@ -1,5 +1,4 @@
 from datetime import datetime
-import logging
 from django.db.models import Sum
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -20,8 +19,6 @@ from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeShortSerializer,
                           TagSerializer, RecipeSerializer,
                           CreateRecipeSerializer)
-
-logger = logging.getLogger("django")
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):

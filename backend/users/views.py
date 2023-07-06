@@ -11,10 +11,6 @@ from api.permissions import IsAuthorOrReadOnly
 from .serializers import CustomUserSerializer, SubscribeSerializer
 from users.serializers import User
 from .models import Subscribe
-import logging
-
-
-logger = logging.getLogger('django')
 
 
 class CustomUserViewSet(UserViewSet):
@@ -30,14 +26,23 @@ class CustomUserViewSet(UserViewSet):
     )
     def subscribe(self, request, id):
         user = request.user
-        author = get_object_or_404(User, pk=id)
+        author_id = self.kwargs.get('id')
+        author = get_object_or_404(User, id=author_id)
 
         if request.method == 'POST':
+            if user == author:
+                return Response({
+                    'errors': 'Вы не можете подписываться на самого себя'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+            if Subscribe.objects.filter(user=user, author=author).exists():
+                return Response({
+                    'errors': 'Вы уже подписаны на данного пользователя'
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            follow = Subscribe.objects.create(user=user, author=author)
             serializer = SubscribeSerializer(
-                author, data=request.data, context={'request': request}
+                follow, context={'request': request}
             )
-            serializer.is_valid(raise_exception=True)
-            Subscribe.objects.create(user=user, author=author)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         if request.method == 'DELETE':
@@ -49,7 +54,6 @@ class CustomUserViewSet(UserViewSet):
     @action(detail=False, url_path='subscriptions',
             url_name='subscriptions', permission_classes=[IsAuthenticated])
     def subscriptions(self, request):
-        logger.info('SUBB')
         user = request.user
         queryset = user.subscriber.all()
         pages = self.paginate_queryset(queryset)
