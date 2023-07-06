@@ -126,5 +126,5 @@ docker-compose -f docker-compose-local.yml up -d
 - Документация будет доступна по адресу: [http://localhost/api/docs/](http://localhost/api/docs/)
 
 
-### Автор backend'а:
+### Автор backendа:
 Варва Анастасия

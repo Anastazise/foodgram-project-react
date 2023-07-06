@@ -32,8 +32,8 @@ class CustomUserViewSet(UserViewSet):
         if request.method == 'POST':
             if user == author:
                 return Response({
-                    'errors': 'Вы не можете подписываться на самого себя'
-                    }, status=status.HTTP_400_BAD_REQUEST)
+                    'errors': 'Вы не можете подписываться на самого себя'},
+                    status=status.HTTP_400_BAD_REQUEST)
             if Subscribe.objects.filter(user=user, author=author).exists():
                 return Response({
                     'errors': 'Вы уже подписаны на данного пользователя'
