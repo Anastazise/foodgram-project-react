@@ -6,7 +6,8 @@ from .models import (Favourite, Ingredient, Components, Recipe,
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'author', 'get_ingredients', 'added_in_favorites')
+    list_display = ('name', 'id', 'author', 'get_ingredients',
+                    'added_in_favorites')
     readonly_fields = ('added_in_favorites',)
     list_filter = ('author', 'name', 'tags',)
 
@@ -34,6 +35,7 @@ class TagAdmin(admin.ModelAdmin):
 @admin.register(Basket)
 class BasketAdmin(admin.ModelAdmin):
     list_display = ('user', 'recipe')
+
 
 @admin.register(Favourite)
 class FavouriteAdmin(admin.ModelAdmin):

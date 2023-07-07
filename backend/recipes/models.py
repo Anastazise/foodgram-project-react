@@ -23,7 +23,8 @@ class Tag(models.Model):
 
 class Ingredient(models.Model):
     name = models.CharField('Название', max_length=MAX_FIELD_NAME)
-    measurement_unit = models.CharField('Единица измерения', max_length=MAX_FIELD_NAME)
+    measurement_unit = models.CharField('Единица измерения',
+                                        max_length=MAX_FIELD_NAME)
 
     class Meta:
         ordering = ['name']
