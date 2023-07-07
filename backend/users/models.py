@@ -5,8 +5,7 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models import CharField, EmailField
 
-
-MAX_NAME_LENGTH = 15
+from foodgram.settings import MAX_NAME_LENGTH
 
 
 class User(AbstractUser):
@@ -39,7 +38,7 @@ class User(AbstractUser):
     )
 
     class Meta:
-        ordering = ['id']
+        ordering = ['username']
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
 
@@ -62,7 +61,7 @@ class Subscribe(models.Model):
     )
 
     class Meta:
-        ordering = ['-id']
+        ordering = ['-user']
         constraints = [
             UniqueConstraint(fields=['user', 'author'],
                              name='unique_subscription')

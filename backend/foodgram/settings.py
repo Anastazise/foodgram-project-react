@@ -8,6 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+MAX_NAME_LENGTH = 15
+MAX_FIELD_NAME = 200
+
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']

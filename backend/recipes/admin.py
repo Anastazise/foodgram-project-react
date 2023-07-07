@@ -6,9 +6,15 @@ from .models import (Favourite, Ingredient, Components, Recipe,
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display = ('name', 'id', 'author', 'added_in_favorites')
+    list_display = ('name', 'id', 'author', 'get_ingredients', 'added_in_favorites')
     readonly_fields = ('added_in_favorites',)
     list_filter = ('author', 'name', 'tags',)
+
+    def get_ingredients(self, obj):
+        return ', '.join([
+            ingredients.name for ingredients
+            in obj.ingredients.all()])
+    get_ingredients.short_description = 'Ингридиенты'
 
     def added_in_favorites(self, obj):
         return obj.favorites.count()
@@ -27,8 +33,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Basket)
 class BasketAdmin(admin.ModelAdmin):
-    list_display = ('user', 'recipe',)
-
+    list_display = ('user', 'recipe')
 
 @admin.register(Favourite)
 class FavouriteAdmin(admin.ModelAdmin):

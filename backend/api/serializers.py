@@ -46,12 +46,6 @@ class RecipeSerializer(ModelSerializer):
             'text',
             'cooking_time',
         )
-        read_only_fields = (
-            "tags",
-            "author",
-            "is_favorited",
-            "is_in_basket"
-        )
 
     def get_ingredients(self, obj):
         recipe = obj
@@ -63,15 +57,13 @@ class RecipeSerializer(ModelSerializer):
 
     def get_is_favorited(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return user.favorites.filter(recipe=obj).exists()
+        return (False if user.is_anonymous
+                else user.favorites.filter(recipe=obj).exists())
 
     def get_is_in_basket(self, obj):
         user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return user.basket.filter(recipe=obj).exists()
+        return (False if user.is_anonymous
+                else user.basket.filter(recipe=obj).exists())
 
 
 class IngredientAmountSerializer(ModelSerializer):
@@ -108,11 +100,11 @@ class CreateRecipeSerializer(ModelSerializer):
         ingredients_list = []
         if not ingredients:
             raise serializers.ValidationError(
-                'Отсутствуют ингридиенты')
+                'Отсутствуют ингредиенты')
         for ingredient in ingredients:
             if ingredient['id'] in ingredients_list:
                 raise serializers.ValidationError(
-                    'Ингридиенты должны быть уникальны')
+                    'Ингредиенты должны быть уникальны')
             ingredients_list.append(ingredient['id'])
             if int(ingredient.get('amount')) < 1:
                 raise serializers.ValidationError(

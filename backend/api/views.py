@@ -8,14 +8,16 @@ from recipes.models import (Favourite, Ingredient, Components, Recipe,
 
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
+
 from .filters import IngredientFilter, RecipeFilter
 from .pagination import CustomPagination
-from .permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
+from .permissions import IsAuthorOrReadOnly
 from .serializers import (IngredientSerializer, RecipeShortSerializer,
                           TagSerializer, RecipeSerializer,
                           CreateRecipeSerializer)
@@ -24,7 +26,7 @@ from .serializers import (IngredientSerializer, RecipeShortSerializer,
 class IngredientViewSet(ReadOnlyModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
 
@@ -32,13 +34,13 @@ class IngredientViewSet(ReadOnlyModelViewSet):
 class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
 
 class RecipeViewSet(ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
-    permission_classes = (IsAuthorOrReadOnly | IsAdminOrReadOnly,)
+    permission_classes = (IsAuthorOrReadOnly | IsAuthenticatedOrReadOnly,)
     pagination_class = CustomPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
@@ -46,8 +48,7 @@ class RecipeViewSet(ModelViewSet):
     def get_serializer_class(self):
         if self.action in ('create', 'update'):
             return CreateRecipeSerializer
-        else:
-            return RecipeSerializer
+        return RecipeSerializer
 
     def post(self, request):
         ser = CreateRecipeSerializer(data=request.data)
@@ -66,8 +67,7 @@ class RecipeViewSet(ModelViewSet):
     def favorite(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Favourite, request.user, pk)
-        else:
-            return self.delete_from(Favourite, request.user, pk)
+        return self.delete_from(Favourite, request.user, pk)
 
     @action(
         detail=True,
@@ -77,8 +77,7 @@ class RecipeViewSet(ModelViewSet):
     def basket(self, request, pk):
         if request.method == 'POST':
             return self.add_to(Basket, request.user, pk)
-        else:
-            return self.delete_from(Basket, request.user, pk)
+        return self.delete_from(Basket, request.user, pk)
 
     def add_to(self, model, user, pk):
         if model.objects.filter(user=user, recipe__id=pk).exists():
