@@ -8,9 +8,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
-MAX_NAME_LENGTH = 15
-MAX_FIELD_NAME = 200
-
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
@@ -129,3 +126,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MAX_NAME_LENGTH = 15
+MAX_FIELD_NAME = 200

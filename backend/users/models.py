@@ -5,35 +5,35 @@ from django.db import models
 from django.db.models import UniqueConstraint
 from django.db.models import CharField, EmailField
 
-from foodgram.settings import MAX_NAME_LENGTH
+from django.conf import settings
 
 
 class User(AbstractUser):
     email = EmailField(
         verbose_name='Адрес электронной почты',
-        max_length=255,
+        max_length=settings.MAX_NAME_LENGTH,
         unique=True,
         help_text='Введите Email',
     )
     username = CharField(
         verbose_name='Уникальный никнейм',
-        max_length=MAX_NAME_LENGTH,
+        max_length=settings.MAX_NAME_LENGTH,
         unique=True,
         help_text='Придумайте имя пользователя',
     )
     first_name = CharField(
         verbose_name='Имя',
-        max_length=MAX_NAME_LENGTH,
+        max_length=settings.MAX_NAME_LENGTH,
         help_text='Укажите имя',
     )
     last_name = CharField(
         verbose_name='Фамилия',
-        max_length=MAX_NAME_LENGTH,
+        max_length=settings.MAX_NAME_LENGTH,
         help_text='Укажите фамилию',
     )
     password = CharField(
         verbose_name=('Пароль'),
-        max_length=128,
+        max_length=settings.MAX_NAME_LENGTH,
         help_text='Придумайте пароль',
     )
 

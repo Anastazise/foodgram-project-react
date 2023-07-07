@@ -2,16 +2,18 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
 from django.db.models import UniqueConstraint
+from django.conf import settings
 
-from foodgram.settings import MAX_NAME_LENGTH, MAX_FIELD_NAME
 
 User = get_user_model()
 
 
 class Tag(models.Model):
-    name = models.CharField('Название', unique=True, max_length=MAX_FIELD_NAME)
-    slug = models.SlugField('Слаг', unique=True, max_length=MAX_FIELD_NAME)
-    color = models.CharField(max_length=MAX_NAME_LENGTH, unique=True)
+    name = models.CharField('Название', unique=True,
+                            max_length=settings.MAX_FIELD_NAME)
+    slug = models.SlugField('Слаг', unique=True,
+                            max_length=settings.MAX_FIELD_NAME)
+    color = models.CharField(max_length=settings.MAX_NAME_LENGTH, unique=True)
 
     class Meta:
         verbose_name = 'Тег'
@@ -22,9 +24,9 @@ class Tag(models.Model):
 
 
 class Ingredient(models.Model):
-    name = models.CharField('Название', max_length=MAX_FIELD_NAME)
+    name = models.CharField('Название', max_length=settings.MAX_FIELD_NAME)
     measurement_unit = models.CharField('Единица измерения',
-                                        max_length=MAX_FIELD_NAME)
+                                        max_length=settings.MAX_FIELD_NAME)
 
     class Meta:
         ordering = ['name']
@@ -40,7 +42,7 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
-    name = models.CharField('Название', max_length=MAX_FIELD_NAME)
+    name = models.CharField('Название', max_length=settings.MAX_FIELD_NAME)
     author = models.ForeignKey(
         to=User,
         related_name='recipes',
