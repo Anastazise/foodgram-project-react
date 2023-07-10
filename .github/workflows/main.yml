@@ -81,8 +81,6 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             cd foodgram-project-react/infra/
-            sudo docker-compose stop
-            sudo docker-compose rm backend
     - name: docker-compose up
       uses: appleboy/ssh-action@master
       with:
