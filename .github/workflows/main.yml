@@ -78,8 +78,8 @@ jobs:
         username: ${{ secrets.USER }}
         key: ${{ secrets.SSH_KEY }}
         script: |
-            sudo docker pull themasterid/foodgram_backend:latest
-            sudo docker pull themasterid/foodgram_frontend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             cd infra/
             sudo docker-compose stop
             sudo docker-compose rm backend
