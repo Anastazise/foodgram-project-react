@@ -67,7 +67,7 @@ class RecipeSerializer(ModelSerializer):
 
 
 class IngredientAmountSerializer(ModelSerializer):
-    # id = IntegerField(write_only=True)
+    id = IntegerField(write_only=True)
 
     class Meta:
         model = Components
