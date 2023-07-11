@@ -65,11 +65,6 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            cd foodgram/infra/
-            sudo docker-compose stop
-            sudo docker-compose rm backend
-            sudo docker rm ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
-            sudo docker rm ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest
             sudo rm -f .env
             touch .env
             echo DB_ENGINE=${{ secrets.DB_ENGINE }} >> .env
