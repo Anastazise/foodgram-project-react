@@ -6,11 +6,11 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY', 'secret')
 
-DEBUG = True
+DEBUG = os.getenv('DEBUG', True)
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', '*')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -111,10 +111,10 @@ DJOSER = {
 LANGUAGE_CODE = 'en-us'
 
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.getenv('TIME_ZONE', 'UTC')
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = os.getenv('USE_TZ', True)
 
 
 STATIC_URL = '/static/'

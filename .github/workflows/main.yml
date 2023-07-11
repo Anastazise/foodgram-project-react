@@ -78,6 +78,10 @@ jobs:
             echo DB_HOST=${{ secrets.DB_HOST }} >> .env
             echo DB_PORT=${{ secrets.DB_PORT }} >> .env
             echo SECRET_KEY=${{ secrets.SECRET_KEY }} >> .env
+            echo DEBUG=${{ secrets.DEBUG }} >> .env
+            echo TIME_ZONE=${{ secrets.TIME_ZONE }} >> .env
+            echo USE_TZ=${{ secrets.USE_TZ }} >> .env
+            echo ALLOWED_HOSTS=${{ secrets.ALLOWED_HOSTS }} >> .env
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_backend:latest
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/foodgram_frontend:latest           
             sudo docker-compose up -d --build
