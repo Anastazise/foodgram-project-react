@@ -10,7 +10,7 @@ class RecipeAdmin(admin.ModelAdmin):
                     'added_in_favorites')
     readonly_fields = ('added_in_favorites',)
     list_filter = ('author', 'tags',)
-    search_fields = ['author', 'name', 'tags',]
+    search_fields = ['author', 'name', 'tags', ]
 
     def get_ingredients(self, obj):
         return ', '.join([
@@ -25,7 +25,7 @@ class RecipeAdmin(admin.ModelAdmin):
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
     list_display = ('name', 'measurement_unit',)
-    search_fields = ['name',]
+    search_fields = ['name', ]
 
 
 @admin.register(Tag)
